@@ -4,33 +4,44 @@ import random
 
 
 class Server:
-
     available_roles = ["Advisor", "Advisee"]
 
     def __init__(self, host, port) -> None:
         self.host = host
         self.port = port
-        self.server_socket = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
+        self._server_socket = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
         self._clients = []
+        self._free_clients = []
+        self._client_pairs = {}
         self._roles = {}
         self._situation = ""
 
     def start_server(self):
-        self.server_socket.bind((self.host, self.port))
-        self.server_socket.listen()
-        print(f"Server is running on {self.server_socket.getsockname()}")
+        self._server_socket.bind((self.host, self.port))
+        self._server_socket.listen()
+        print(f"Server is running on {self._server_socket.getsockname()}")
         self._listen_for_connections()
 
     def _listen_for_connections(self):
         while True:
-            client_socket, address = self.server_socket.accept()
+            client_socket, address = self._server_socket.accept()
             self._clients.append(client_socket)
+            self._free_clients.append(client_socket)
             print(f"Accepted connection from {address}")
             thread = threading.Thread(target=self._handle_client, args=(client_socket,))
             thread.start()
 
     def _handle_client(self, client_socket: sock.socket):
         self._assign_role(client_socket)
+
+        if self._get_role(client_socket) == "Advisor":
+            # TODO implement advisor behaviour
+            client_socket.send(f"Situation requiring advice: {self._situation}".encode())
+
+        elif self._get_role(client_socket) == "Advisee":
+            # TODO implement advisee behaviour
+            client_socket.send("What do you need advice about? \n".encode())
+            situation = self._server_socket.recv(1024).decode()
 
     def _get_role(self, client_socket: sock.socket):
         return self._roles.get(client_socket)
@@ -40,6 +51,30 @@ class Server:
         print(f"Assigning role \"{role}\" to {client_socket.getpeername()}...")
         client_socket.send(role.encode())
         self._roles.update({client_socket: role})
+
+    def _pair_clients(self, client_socket: sock.socket):
+
+        if self._get_role(client_socket) == "Advisor":
+            self._client_pairs[client_socket] = ""
+            client_socket.send("Waiting for an advisee to connect you too...".encode())
+
+            while not self._client_pairs.get(client_socket):
+                # Wait for an advisee to connect
+                continue
+
+            client_socket.send("An advisee has connected to you".encode())
+
+        elif self._get_role(client_socket) == "Advisee":
+            client_socket.send("Waiting for a free advisor to connect to...".encode())
+
+            while not all(self._client_pairs):
+                # Wait for a free advisor
+                continue
+
+            for i in self._client_pairs.keys():
+                if not self._client_pairs[i]:
+                    self._client_pairs[i] = client_socket
+                    client_socket.send("Connected you to an advisor".encode())
 
 
 if __name__ == "__main__":

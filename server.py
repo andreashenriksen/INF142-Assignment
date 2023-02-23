@@ -7,17 +7,17 @@ class Server:
     available_roles = ["Advisor", "Advisee"]
 
     def __init__(self, host, port) -> None:
-        self.host = host
-        self.port = port
+        self._host = host
+        self._port = port
         self._server_socket = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
         self._clients = []
         self._free_clients = []
-        self._client_pairs = {}
-        self._roles = {}
-        self._situation = ""
+        self._client_pairs = {}  # {advisor: advisee}
+        self._roles = {}         # {client_socket: role}
+        self._questions = {}     # {advisee: question}
 
     def start_server(self):
-        self._server_socket.bind((self.host, self.port))
+        self._server_socket.bind((self._host, self._port))
         self._server_socket.listen()
         print(f"Server is running on {self._server_socket.getsockname()}")
         self._listen_for_connections()
@@ -33,15 +33,22 @@ class Server:
 
     def _handle_client(self, client_socket: sock.socket):
         self._assign_role(client_socket)
+        self._pair_clients(client_socket)
 
         if self._get_role(client_socket) == "Advisor":
             # TODO implement advisor behaviour
-            client_socket.send(f"Situation requiring advice: {self._situation}".encode())
+            while not self._questions.get(self._client_pairs.get(client_socket)):
+                continue
+            situation = self._questions.get(self._client_pairs.get(client_socket))
+            client_socket.send(f"Situation requiring advice: {situation}".encode())
+            advice = self._server_socket.recv(1024).decode()
+            self._client_pairs.get(client_socket).send(f"Advice sent by advisor: {advice}".encode())
 
         elif self._get_role(client_socket) == "Advisee":
             # TODO implement advisee behaviour
             client_socket.send("What do you need advice about? \n".encode())
             situation = self._server_socket.recv(1024).decode()
+            self._questions.update({client_socket: situation})
 
     def _get_role(self, client_socket: sock.socket):
         return self._roles.get(client_socket)
@@ -67,7 +74,7 @@ class Server:
         elif self._get_role(client_socket) == "Advisee":
             client_socket.send("Waiting for a free advisor to connect to...".encode())
 
-            while not all(self._client_pairs):
+            while all(self._client_pairs.values()):
                 # Wait for a free advisor
                 continue
 

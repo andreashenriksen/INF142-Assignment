@@ -11,8 +11,8 @@ class Client:
 
     def connect_to_server(self):
         self._client_socket.connect((self._host, self._port))
-        server_message = self._client_socket.recv(1024).decode()
-        print(f"Assigned role \"{server_message}\" by server")
+        self._role = self._client_socket.recv(1024).decode()
+        print(f"Assigned role \"{self._role}\" by server")
 
 
 if __name__ == "__main__":

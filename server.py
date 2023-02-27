@@ -5,7 +5,6 @@ import selectors
 
 
 class Server:
-
     def __init__(self, host, port) -> None:
         self._host = host
         self._port = port
@@ -13,6 +12,7 @@ class Server:
         self._advisee_queue = []
         self._client_info = {}   # {client_socket: role}
         self._questions = {}     # {advisee: question}
+        self._sem = threading.Semaphore() #Semaphore prevents race cond between advisors
 
     def start_server(self):
         self._server.bind((self._host, self._port))
@@ -32,7 +32,6 @@ class Server:
         while True:
             if self._get_role(client_socket) == "Advisor":
                 advisee, situation = self._get_advisee()
-                print(f"Advisee: {advisee} ... Situation: {situation}")
                 client_socket.send(situation.encode())
                 advice = client_socket.recv(1024).decode()
                 advisee.send(advice.encode())
@@ -59,15 +58,12 @@ class Server:
         return self._client_info.get(client_socket)
 
     def _get_advisee(self):
-        while len(self._advisee_queue) == 0:
+        while not self._questions:
             continue
-        if len(self._advisee_queue) > 0:
-            advisee = self._advisee_queue.pop(0)
-            while not (advisee in self._questions):
-                print("waiting")
-                continue
-            situation = self._questions.pop(advisee)
-            return advisee, situation
+        advisee = list(self._questions.keys())[0]
+        situation = self._questions.pop(advisee)
+        self._advisee_queue.remove(advisee)
+        return advisee, situation
 
     def _assign_role(self, client_socket: socket):
         role = random.choice(["Advisee", "Advisor"])

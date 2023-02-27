@@ -76,7 +76,7 @@ class Server:
                 self._reg_advisees.append(client_socket)
                 client_socket.send(role.encode())
 
-        print(f"Assigning role \"{role}\" to {client_socket.getpeername()}...")
+        print(f"Assigning role \"{role}\" to {client_socket.getpeername()}")
         self._client_info[client_socket] = role
 
     def _continue(self, client_socket):
@@ -86,6 +86,7 @@ class Server:
         if continuing.lower() == "y":
             self._handle_client(client_socket)
             return
+        print(f"Disconnecting socket {client_socket.getpeername()}")
         client_socket.close()
 
 

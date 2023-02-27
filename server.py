@@ -1,5 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
-import threading
+from threading import Thread, Lock
 import random
 import selectors
 
@@ -10,9 +10,9 @@ class Server:
         self._port = port
         self._server = socket(AF_INET, SOCK_STREAM)
         self._advisee_queue = []
-        self._client_info = {}   # {client_socket: role}
-        self._questions = {}     # {advisee: question}
-        self._sem = threading.Semaphore() #Semaphore prevents race cond between advisors
+        self._client_info = {}  # {client_socket: role}
+        self._questions = {}    # {advisee: question}
+        self._lock = Lock()
 
     def start_server(self):
         self._server.bind((self._host, self._port))

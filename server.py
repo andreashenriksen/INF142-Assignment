@@ -9,8 +9,8 @@ class Server:
         self._port = port
         self._server = socket(AF_INET, SOCK_STREAM)
         self._reg_advisees = []  # Advisees connected to the server
-        self._client_info = {}  # {client_socket: role}
-        self._questions = {}    # {advisee: question}
+        self._client_info = {}   # {client_socket: role}
+        self._questions = {}     # {advisee: question}
         self._lock = Lock()
 
     def start_server(self):

@@ -34,13 +34,14 @@ class Client:
                 situation = input("Input your situation: ")
                 self._client.send(situation.encode())
                 print("Waiting for advice...")
-                print(self._client.recv(1024).decode())  # Waiting for advice...
+                advice = self._client.recv(1024).decode()
+                print(f"You got some advice: {advice}")
                 self._continue()
                 return
 
     def _continue(self):
         """Asks user if they want to continue"""
-        print("Do you want to continue?\n")
+        print("\nDo you want to continue?")
         continuing = input("Answer \"y\" or \"n\": ")
         while not (continuing == 'y' or continuing == 'n'):
             continuing = input("That's not a valid input, please type either \"y\" or \"n\": ")

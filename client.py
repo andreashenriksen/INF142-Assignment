@@ -15,6 +15,7 @@ class Client:
         self._start_session()
 
     def _start_session(self):
+        '''Receives role from server and acts according to role given'''
         self._role = self._client.recv(1024).decode()
         print(f"Assigned role \"{self._role}\" by server")
 
@@ -24,13 +25,7 @@ class Client:
                 print(f"Someone needs advice on this situation: {situation}")
                 advice = input("Give your advice: ")
                 self._client.send(advice.encode())
-                print("Do you want to continue?\n")
-                continuing = input("Answer \"yes\" or \"no\": ")
-                self._client.send(continuing.encode())
-                if continuing == "yes":
-                    self._start_session()
-                    return
-                self._client.close()
+                self._cont()
                 return
 
         elif self._role == "Advisee":
@@ -40,15 +35,18 @@ class Client:
                 self._client.send(situation.encode())
                 print("Waiting for advice...")
                 print(self._client.recv(1024).decode())  # Waiting for advice...
-                print("Do you want to continue?\n")
-                continuing = input("Answer \"yes\" or \"no\": ")
-                self._client.send(continuing.encode())
-                if continuing == "yes":
-                    self._start_session()
-                    return
-                self._client.close()
+                self._cont()
                 return
 
+    def _cont(self):
+        '''Asks user if they want to continue'''
+        print("Do you want to continue?\n")
+        continuing = input("Answer \"y\" or \"n\"?: ")
+        self._client.send(continuing.encode())
+        if continuing == "y":
+            self._start_session()
+            return
+        self._client.close()
 
 if __name__ == "__main__":
     SERVER_HOST, SERVER_PORT = "localhost", 5000

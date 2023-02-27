@@ -23,7 +23,7 @@ class Server:
         while True:
             client_socket, address = self._server.accept()
             print(f"Accepted connection from {address}")
-            thread = threading.Thread(target=self._handle_client, args=(client_socket,))
+            thread = Thread(target=self._handle_client, args=(client_socket,))
             thread.start()
 
     def _handle_client(self, client_socket: socket):

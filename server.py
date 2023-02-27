@@ -10,8 +10,8 @@ class Server:
         self._server = socket(AF_INET, SOCK_STREAM)
         self._reg_advisees = []  # Advisees connected to the server
         self._client_info = {}  # {client_socket: role}
-        self._questions = {}  # {advisee: question}
-        self._lock = Lock()  # Semaphore prevents race cond between advisors
+        self._questions = {}    # {advisee: question}
+        self._lock = Lock()
 
     def start_server(self):
         """Starts the server and listens for clients trying to connect"""

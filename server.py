@@ -4,7 +4,7 @@ import random
 
 
 class Server:
-    available_roles = ["Advisor", "Advisee"]
+    available_roles = ["Advisee", "Advisor"]
 
     def __init__(self, host, port) -> None:
         self._host = host
@@ -15,6 +15,7 @@ class Server:
         self._client_pairs = {}  # {advisor: advisee}
         self._roles = {}         # {client_socket: role}
         self._questions = {}     # {advisee: question}
+        self._advice = {}        # {advisor: advice}
 
     def start_server(self):
         self._server_socket.bind((self._host, self._port))
@@ -41,13 +42,13 @@ class Server:
                 continue
             situation = self._questions.get(self._client_pairs.get(client_socket))
             client_socket.send(f"Situation requiring advice: {situation}".encode())
-            advice = self._server_socket.recv(1024).decode()
+            advice = client_socket.recv(1024).decode()
             self._client_pairs.get(client_socket).send(f"Advice sent by advisor: {advice}".encode())
 
         elif self._get_role(client_socket) == "Advisee":
             # TODO implement advisee behaviour
-            client_socket.send("What do you need advice about? \n".encode())
-            situation = self._server_socket.recv(1024).decode()
+            client_socket.send("What do you need advice about?".encode())
+            situation = client_socket.recv(1024).decode()
             self._questions.update({client_socket: situation})
 
     def _get_role(self, client_socket: sock.socket):
@@ -74,6 +75,9 @@ class Server:
         elif self._get_role(client_socket) == "Advisee":
             client_socket.send("Waiting for a free advisor to connect to...".encode())
 
+            while not bool(self._client_pairs):
+                continue
+
             while all(self._client_pairs.values()):
                 # Wait for a free advisor
                 continue
@@ -81,7 +85,7 @@ class Server:
             for i in self._client_pairs.keys():
                 if not self._client_pairs[i]:
                     self._client_pairs[i] = client_socket
-                    client_socket.send("Connected you to an advisor".encode())
+            client_socket.send("Connected you to an advisor".encode())
 
 
 if __name__ == "__main__":

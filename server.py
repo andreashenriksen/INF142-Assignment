@@ -54,12 +54,13 @@ class Server:
 
     def _get_advisee(self):
         """Finds the first question asked by an advisee and sends to advisor"""
-        while not self._questions:
-            continue
-        advisee = list(self._questions.keys())[0]
-        situation = self._questions.pop(advisee)
-        self._reg_advisees.remove(advisee)
-        return advisee, situation
+        with self._lock:
+            while not self._questions:
+                continue
+            advisee = list(self._questions.keys())[0]
+            situation = self._questions.pop(advisee)
+            self._reg_advisees.remove(advisee)
+            return advisee, situation
 
     def _assign_role(self, client_socket: socket):
         """Assigns a random role to a client, assigns advisee if there are no registered advisees in the system"""

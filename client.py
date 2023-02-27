@@ -1,4 +1,4 @@
-import socket as sock
+from socket import socket, AF_INET, SOCK_STREAM
 
 
 class Client:
@@ -7,34 +7,47 @@ class Client:
         self._host = host
         self._port = port
         self._role = ""
-        self._client_socket = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
+        self._client = socket(AF_INET, SOCK_STREAM)
 
     def connect_to_server(self):
-        self._client_socket.connect((self._host, self._port))
-        self._role = self._client_socket.recv(1024).decode()
-        print(f"Assigned role \"{self._role}\" by server")
+        self._client.connect((self._host, self._port))
+        print(f"Connected to {self._host} on {self._port}")
         self._start_session()
 
     def _start_session(self):
+        self._role = self._client.recv(1024).decode()
+        print(f"Assigned role \"{self._role}\" by server")
 
         if self._role == "Advisor":
-            self._receive_partner()
-            situation = self._client_socket.recv(1024).decode()  # Receive a situation to give advice to
-            print(situation)
-            advice = input()
-            self._client_socket.send(advice.encode())
+            while True:
+                situation = self._client.recv(1024).decode()  # Receive a situation to give advice to
+                print(f"Someone needs advice on this situation: {situation}")
+                advice = input("Give your advice: ")
+                self._client.send(advice.encode())
+                print("Do you want to continue?\n")
+                continuing = input("Answer \"yes\" or \"no\": ")
+                self._client.send(continuing.encode())
+                if continuing == "yes":
+                    self._start_session()
+                    return
+                self._client.close()
+                return
 
         elif self._role == "Advisee":
-            self._receive_partner()
-            print(self._client_socket.recv(1024).decode())  # Server asking for your situation
-            situation = input()
-            self._client_socket.send(situation.encode())
-            print("Waiting for advice...")
-            print(self._client_socket.recv(1024).decode())  # Waiting for advice...
-
-    def _receive_partner(self):
-        print(self._client_socket.recv(1024).decode())  # Waiting for connection
-        print(self._client_socket.recv(1024).decode())  # Connection established to 2nd client
+            while True:
+                print("What do you need advice on?")
+                situation = input("Input your situation: ")
+                self._client.send(situation.encode())
+                print("Waiting for advice...")
+                print(self._client.recv(1024).decode())  # Waiting for advice...
+                print("Do you want to continue?\n")
+                continuing = input("Answer \"yes\" or \"no\": ")
+                self._client.send(continuing.encode())
+                if continuing == "yes":
+                    self._start_session()
+                    return
+                self._client.close()
+                return
 
 
 if __name__ == "__main__":

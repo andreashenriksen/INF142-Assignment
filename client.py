@@ -13,6 +13,28 @@ class Client:
         self._client_socket.connect((self._host, self._port))
         self._role = self._client_socket.recv(1024).decode()
         print(f"Assigned role \"{self._role}\" by server")
+        self._start_session()
+
+    def _start_session(self):
+
+        if self._role == "Advisor":
+            self._receive_partner()
+            situation = self._client_socket.recv(1024).decode()  # Receive a situation to give advice to
+            print(situation)
+            advice = input()
+            self._client_socket.send(advice.encode())
+
+        elif self._role == "Advisee":
+            self._receive_partner()
+            print(self._client_socket.recv(1024).decode())  # Server asking for your situation
+            situation = input()
+            self._client_socket.send(situation.encode())
+            print("Waiting for advice...")
+            print(self._client_socket.recv(1024).decode())  # Waiting for advice...
+
+    def _receive_partner(self):
+        print(self._client_socket.recv(1024).decode())  # Waiting for connection
+        print(self._client_socket.recv(1024).decode())  # Connection established to 2nd client
 
 
 if __name__ == "__main__":

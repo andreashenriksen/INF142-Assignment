@@ -15,7 +15,7 @@ class Client:
         self._start_session()
 
     def _start_session(self):
-        '''Receives role from server and acts according to role given'''
+        """Receives role from server and acts according to role given"""
         self._role = self._client.recv(1024).decode()
         print(f"Assigned role \"{self._role}\" by server")
 
@@ -39,7 +39,7 @@ class Client:
                 return
 
     def _cont(self):
-        '''Asks user if they want to continue'''
+        """Asks user if they want to continue"""
         print("Do you want to continue?\n")
         continuing = input("Answer \"y\" or \"n\"?: ")
         self._client.send(continuing.encode())
@@ -47,6 +47,7 @@ class Client:
             self._start_session()
             return
         self._client.close()
+
 
 if __name__ == "__main__":
     SERVER_HOST, SERVER_PORT = "localhost", 5000

@@ -11,7 +11,7 @@ class Server:
         self._reg_advisees = []  # Advisees connected to the server
         self._client_info = {}   # {client_socket: role}
         self._questions = {}     # {advisee: question}
-        self._sem = threading.Semaphore() #Semaphore prevents race cond between advisors
+        self._sem = Lock() #Semaphore prevents race cond between advisors
         
     def start_server(self):
         '''Starts the server and listens for clients trying to connect'''

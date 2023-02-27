@@ -41,7 +41,9 @@ class Client:
     def _continue(self):
         """Asks user if they want to continue"""
         print("Do you want to continue?\n")
-        continuing = input("Answer \"y\" or \"n\"?: ")
+        continuing = input("Answer \"y\" or \"n\": ")
+        while not (continuing == 'y' or continuing == 'n'):
+            continuing = input("That's not a valid input, please type either \"y\" or \"n\": ")
         self._client.send(continuing.encode())
         if continuing == "y":
             self._start_session()

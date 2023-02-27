@@ -39,14 +39,14 @@ class Server:
                 client_socket.send(situation.encode())
                 advice = client_socket.recv(1024).decode()
                 advisee.send(advice.encode())
-                self._cont(client_socket)
+                self._continue(client_socket)
 
             # If client's role is advisee fetch their question and add them to the list of clients who sent questions
             elif self._get_role(client_socket) == "Advisee":
                 situation = client_socket.recv(1024).decode()
                 self._questions.update({client_socket: situation})
 
-                self._cont(client_socket)
+                self._continue(client_socket)
 
     def _get_role(self, client_socket: socket):
         """Gets a client's role"""
@@ -78,7 +78,7 @@ class Server:
         print(f"Assigning role \"{role}\" to {client_socket.getpeername()}...")
         self._client_info[client_socket] = role
 
-    def _cont(self, client_socket):
+    def _continue(self, client_socket):
         """Checks if a client wishes to continue"""
         continuing = client_socket.recv(1024).decode()
         self._client_info.pop(client_socket)

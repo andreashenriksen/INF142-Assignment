@@ -25,7 +25,7 @@ class Client:
                 print(f"Someone needs advice on this situation: {situation}")
                 advice = input("Give your advice: ")
                 self._client.send(advice.encode())
-                self._cont()
+                self._continue()
                 return
 
         elif self._role == "Advisee":
@@ -35,10 +35,10 @@ class Client:
                 self._client.send(situation.encode())
                 print("Waiting for advice...")
                 print(self._client.recv(1024).decode())  # Waiting for advice...
-                self._cont()
+                self._continue()
                 return
 
-    def _cont(self):
+    def _continue(self):
         """Asks user if they want to continue"""
         print("Do you want to continue?\n")
         continuing = input("Answer \"y\" or \"n\"?: ")

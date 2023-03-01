@@ -29,4 +29,4 @@ An example of what the text looks like with rich:
 
 **Step 4:** In your advisor instance of the program, write your answer and hit enter
 
-**Step 5:** As both client and server, write y or n if you want a new role.
+**Step 5:** As both client and server, write y if you want a new role and n if you do not.

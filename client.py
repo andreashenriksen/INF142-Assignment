@@ -19,9 +19,9 @@ class Client:
         """Receives role from server and acts according to role given"""
         self._role = self._client.recv(1024).decode()
         if self._role == "Advisor":
-            print(f"Assigned role [green1]{self._role}[/green1] :brain: by server")
+            print(f"Assigned role [green1]{self._role}[/green1] by server")
         else:
-            print(f"Assigned role [green1]{self._role}[/green1] :notebook: by server")
+            print(f"Assigned role [green1]{self._role}[/green1] by server")
 
         if self._role == "Advisor":
             while True:

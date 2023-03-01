@@ -12,9 +12,11 @@ python -m pip install rich
 If you do not wish to use the rich library or cannot install it, the text formatting will be weird but should still be readable.
 
 An example of what the text looks like without rich:
+
 ![wrong text ex](https://user-images.githubusercontent.com/78080565/222165433-fb064895-228f-4d38-9839-b30fdf370768.PNG)
 
 An example of what the text looks like with rich:
+
 ![correct text example](https://user-images.githubusercontent.com/78080565/222166299-589b95e8-63d1-4130-9ca6-15194f66e018.png)
 
 

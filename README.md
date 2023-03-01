@@ -33,13 +33,13 @@ An example of what the text looks like with rich:
 5. As both client and server, write ***y*** if you want a new role and ***n*** if you do not.
 
 ## Known bugs
-We have a bug where if a client forcefully disconnects from server, and the client was an advisor who previously aquired a lock waiting to get a situation from advisee, the lock will never release.
+We have a bug where if a client forcefully disconnects from server, and the client was an advisor who previously aquired a lock waiting to get a situation from advisee, the first advisee who asks a question after that will never reach an advisor.
 
 ### Example
 ```python
 def _get_advisee(self):
     """Finds the first question asked by an advisee and sends to advisor"""
-    with self._lock: # <-- Will never release if client aquired then forcefully disconnects
+    with self._lock: # <-- If advisor client disconnects while having lock, the thread will continue but no one will get the advisee question.
         while not self._questions:
             continue
         advisee = list(self._questions.keys())[0]

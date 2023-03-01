@@ -1,5 +1,6 @@
 from socket import socket, AF_INET, SOCK_STREAM
 from threading import Thread, Lock
+from rich import print
 import random
 
 
@@ -76,7 +77,7 @@ class Server:
                 self._reg_advisees.append(client_socket)
                 client_socket.send(role.encode())
 
-        print(f"Assigning role \"{role}\" to {client_socket.getpeername()}")
+        print(f"Assigning role [green1]{role}[/green1] to {client_socket.getpeername()}")
         self._client_info[client_socket] = role
 
     def _continue(self, client_socket):

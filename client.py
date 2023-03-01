@@ -1,4 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
+from rich import print
 
 
 class Client:
@@ -17,12 +18,15 @@ class Client:
     def _start_session(self):
         """Receives role from server and acts according to role given"""
         self._role = self._client.recv(1024).decode()
-        print(f"Assigned role \"{self._role}\" by server")
+        if self._role == "Advisor":
+            print(f"Assigned role [green1]{self._role}[/green1] :brain: by server")
+        else:
+            print(f"Assigned role [green1]{self._role}[/green1] :notebook: by server")
 
         if self._role == "Advisor":
             while True:
                 situation = self._client.recv(1024).decode()  # Receive a situation to give advice to
-                print(f"Someone needs advice on this situation: {situation}")
+                print(f"Someone needs advice on this situation: [red1]{situation}[/red1]")
                 advice = input("Give your advice: ")
                 self._client.send(advice.encode())
                 self._continue()
@@ -35,7 +39,7 @@ class Client:
                 self._client.send(situation.encode())
                 print("Waiting for advice...")
                 advice = self._client.recv(1024).decode()
-                print(f"You got some advice: {advice}")
+                print(f"You got some advice: [red1]{advice}[/red1]")
                 self._continue()
                 return
 

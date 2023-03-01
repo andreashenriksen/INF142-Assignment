@@ -1,5 +1,5 @@
 # INF142_Assigntment1
-Assignment in the UIB course INF142 where made a server-client model. A server is started and assigns roles to clients, then clients communicate each other by receiving or giving advice based on the role they were assigned.
+Assignment in the UIB course INF142 where we made a server-client model. A server is started and assigns roles to clients, then clients communicate each other by receiving or giving advice based on the role they were assigned.
 
 ## Getting Started
 

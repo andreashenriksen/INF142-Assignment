@@ -3,12 +3,11 @@ Assignment in the UIB course INF142 where we made a server-client model. A serve
 
 ## Getting Started
 
-### Prerequisites
 For this project we elected to use the rich library for some formatting to make text clearer.
 
 For the library and its functions see: https://github.com/Textualize/rich
 
-The library is in [requirements.txt](requirements.txt), but in case it doens't install you can install it with ``pip``:
+The library is in [requirements.txt](requirements.txt), but in case it doesn't install you can install it with ``pip``:
 
 ``python -m pip install rich``
 

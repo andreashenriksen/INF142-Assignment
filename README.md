@@ -22,7 +22,11 @@ An example of what the text looks like with rich:
 
 ### Testing the scripts:
 **Step 1:** Run server.py
+
 **Step 2:** Run client.py to get the role of advisee, and then write your question and hit enter
+
 **Step 3:** Run another instance of client.py until you get the advisor role (might take a few tries)
+
 **Step 4:** In your advisor instance of the program, write your answer and hit enter
+
 **Step 5:** As both client and server, write y or n if you want a new role.

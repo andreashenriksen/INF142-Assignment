@@ -2,15 +2,15 @@
 Assignment in the UIB course INF142 where we made a server-client model. A server is started and assigns roles to clients, then clients communicate each other by receiving or giving advice based on the role they were assigned.
 
 ## Getting Started
+### Prerequisites
+For this project we elected to use the [rich](https://github.com/Textualize/rich) library for some formatting to make text clearer.
 
-For this project we elected to use the rich library for some formatting to make text clearer.
+The library is in [requirements.txt](requirements.txt), but in case it doesn't install you can install it with ``pip``:  
+```bash
+python -m pip install rich
+```
 
-For the library and its functions see: https://github.com/Textualize/rich
-
-The library is in [requirements.txt](requirements.txt), but in case it doesn't install you can install it with ``pip``:
-
-``python -m pip install rich``
-
+### Notes
 If you do not wish to use the rich library or cannot install it, the text formatting will be weird but should still be readable.
 
 An example of what the text looks like without rich:

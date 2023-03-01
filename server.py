@@ -5,6 +5,7 @@ import random
 
 
 class Server:
+
     def __init__(self, host, port) -> None:
         self._host = host
         self._port = port

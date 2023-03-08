@@ -12,6 +12,7 @@ python -m pip install rich
 
 ### Notes
 If you do not wish to use the rich library or cannot install it, the text formatting will be weird but should still be readable.
+The code will throw an error if you do not have rich installed, to avoid this comment out the import on line 2 in ``client.py`` and line 3 in ``server.py``
 
 An example of what the text looks like without rich:
 
